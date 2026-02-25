@@ -241,7 +241,7 @@ def arquitectura():
         de datos estructurados y no estructurados.
         """,
         image="azure_arch.png",
-        link="https://stmlauditoria2026.blob.core.windows.net/",
+        link="https://portal.azure.com/#@ccriveraa89gmail.onmicrosoft.com/resource/subscriptions/76ed1c4c-2873-4232-97e7-02be03d92110/resourceGroups/rg-auditoria-ml/providers/Microsoft.Storage/storageAccounts/stmlauditoria2026/containersList",
         link_text="Explorar Azure Blob Storage"
     )
 
@@ -254,11 +254,36 @@ def modelo():
     return layout(
         "Modelo Ensemble de Detección de Anomalías",
         "Machine Learning No Supervisado",
-        """
-        Se implementó un enfoque ensemble combinando
-        Isolation Forest, LOF, One-Class SVM
-        y Elliptic Envelope.
-        """,
+		"""
+		Se implementó un enfoque ensemble combinando
+		Isolation Forest, LOF, One-Class SVM y Elliptic Envelope.
+
+		• Isolation Forest:
+		Funciona como un auditor que separa registros uno a uno
+		hasta encontrar cuáles se aíslan rápidamente del resto.
+		Si un dato necesita muy pocos cortes para quedar solo,
+		probablemente es anómalo.
+
+		• Local Outlier Factor (LOF):
+		Es como comparar un comercio con sus vecinos del mismo barrio.
+		Si su comportamiento es muy diferente respecto a su entorno inmediato,
+		se considera sospechoso, aunque a nivel global no lo parezca.
+
+		• One-Class SVM:
+		Actúa como un guardia que dibuja un perímetro alrededor
+		del comportamiento normal.
+		Todo lo que queda fuera de ese límite es marcado como atípico.
+
+		• Elliptic Envelope:
+		Funciona como medir qué tan lejos está un punto del “centro estadístico”.
+		Si un registro está demasiado lejos del promedio multivariable,
+		es tratado como una desviación significativa.
+
+		La combinación de estos enfoques permite detectar
+		diferentes tipos de anomalías y reducir falsos positivos,
+		tal como lo haría un comité de auditores evaluando
+		un mismo caso desde distintas perspectivas.
+		""",
         """
         El modelo fue desarrollado y validado en Azure ML,
         permitiendo entrenamiento, versionamiento y despliegue.
