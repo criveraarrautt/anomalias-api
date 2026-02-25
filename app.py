@@ -171,9 +171,16 @@ def inicio():
     content = """
     <div class="card">
         <div class="text-block">
-        Esta solución integra arquitectura moderna de datos,
-        procesamiento distribuido en la nube y modelos de detección
-        de anomalías para fortalecer procesos de auditoría.
+        Obtener un entendimiento integral de la estructura y comportamiento de los datos
+		transaccionales.,
+        Identificar tendencias, patrones y posibles problemáticas desde la perspectiva del
+		negocio.
+        Detectar transacciones inusuales o anómalas que puedan representar situaciones de
+		riesgo para el Banco.
+		Evaluar el cumplimiento de reglas de negocio definidas para la apertura y manejo
+		de productos financieros.
+		Formular propuestas de alertamiento para fortalecer el control preventivo desde
+		auditoría.
         </div>
     </div>
 
@@ -255,7 +262,7 @@ def arquitectura():
         </div>
         <img src="/static/azure_arch.png">
         <a class="btn" target="_blank"
-        href="https://stmlauditoria2026.blob.core.windows.net/">
+        href="https://portal.azure.com/#@ccriveraa89gmail.onmicrosoft.com/resource/subscriptions/76ed1c4c-2873-4232-97e7-02be03d92110/resourceGroups/rg-auditoria-ml/providers/Microsoft.Storage/storageAccounts/stmlauditoria2026/containersList">
         Explorar Azure Blob Storage
         </a>
     </div>
