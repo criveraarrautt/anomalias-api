@@ -4,20 +4,17 @@ from fastapi.staticfiles import StaticFiles
 
 app = FastAPI(
     title="Arquitectura Analítica - Auditoría ML",
-    version="5.0"
+    version="6.0"
 )
 
 app.mount("/static", StaticFiles(directory="static"), name="static")
 
 
 # ===============================
-# LAYOUT MODERNO
+# LAYOUT BASE MODERNO
 # ===============================
 
-def layout(title, subtitle, paragraph1="", paragraph2="", image=None, link=None, link_text=None):
-
-    image_html = f'<img src="/static/{image}" class="image">' if image else ""
-    link_html = f'<a class="btn" target="_blank" href="{link}">{link_text}</a>' if link else ""
+def layout(title, subtitle, content_html):
 
     return f"""
     <html>
@@ -82,12 +79,31 @@ def layout(title, subtitle, paragraph1="", paragraph2="", image=None, link=None,
                 transform: translateY(-5px);
             }}
 
-            h2 {{
-                color: #003865;
-                margin-bottom: 15px;
+            .text-block {{
+                line-height: 1.8;
+                white-space: pre-line;
             }}
 
-            .image {{
+            .model-grid {{
+                display: grid;
+                grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+                gap: 30px;
+                margin-top: 30px;
+            }}
+
+            .model-card {{
+                background: white;
+                padding: 30px;
+                border-radius: 14px;
+                box-shadow: 0px 8px 25px rgba(0,0,0,0.05);
+                transition: 0.3s;
+            }}
+
+            .model-card:hover {{
+                transform: translateY(-6px);
+            }}
+
+            img {{
                 width: 100%;
                 border-radius: 10px;
                 margin-top: 25px;
@@ -101,7 +117,6 @@ def layout(title, subtitle, paragraph1="", paragraph2="", image=None, link=None,
                 text-decoration: none;
                 border-radius: 8px;
                 margin-top: 25px;
-                font-weight: 500;
             }}
 
             footer {{
@@ -135,19 +150,7 @@ def layout(title, subtitle, paragraph1="", paragraph2="", image=None, link=None,
     </header>
 
     <div class="container">
-
-        <div class="card">
-            <h2>Contexto</h2>
-            <p>{paragraph1}</p>
-        </div>
-
-        <div class="card">
-            <h2>Aplicación práctica</h2>
-            <p>{paragraph2}</p>
-            {image_html}
-            {link_html}
-        </div>
-
+        {content_html}
     </div>
 
     <footer>
@@ -164,41 +167,54 @@ def layout(title, subtitle, paragraph1="", paragraph2="", image=None, link=None,
 # ===============================
 @app.get("/", response_class=HTMLResponse)
 def inicio():
-    return layout(
-        "Plataforma Integral de Auditoría con Machine Learning",
-        "Arquitectura Medallion + Azure ML + Power BI",
-        """
+
+    content = """
+    <div class="card">
+        <div class="text-block">
         Esta solución integra arquitectura moderna de datos,
         procesamiento distribuido en la nube y modelos de detección
         de anomalías para fortalecer procesos de auditoría.
-        """,
-        """
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="text-block">
         Permite identificar comportamientos atípicos,
         concentraciones territoriales y patrones de riesgo
         mediante análisis avanzado y visualización ejecutiva.
-        """
+        </div>
+    </div>
+    """
+
+    return layout(
+        "Plataforma Integral de Auditoría con Machine Learning",
+        "Arquitectura Medallion + Azure ML + Power BI",
+        content
     )
 
 
 # ===============================
-# METODOLOGÍA (SIN LINK)
+# METODOLOGÍA
 # ===============================
 @app.get("/metodologia", response_class=HTMLResponse)
 def metodologia():
+
+    content = """
+    <div class="card">
+        <div class="text-block">
+        El proyecto fue desarrollado bajo CRISP-DM,
+        asegurando alineación estratégica,
+        comprensión profunda de los datos
+        y validación técnica del modelo.
+        </div>
+        <img src="/static/pipeline.png">
+    </div>
+    """
+
     return layout(
         "Metodología CRISP-DM",
         "Marco estructurado de desarrollo analítico",
-        """
-        El proyecto fue desarrollado bajo CRISP-DM,
-        asegurando alineación estratégica, comprensión
-        profunda de los datos y validación técnica del modelo.
-        """,
-        """
-        Se realizó análisis exploratorio, transformación,
-        selección de variables y evaluación comparativa
-        de modelos no supervisados.
-        """,
-        image="pipeline.png"
+        content
     )
 
 
@@ -207,89 +223,92 @@ def metodologia():
 # ===============================
 @app.get("/datalake", response_class=HTMLResponse)
 def datalake():
+
+    content = """
+    <div class="card">
+        <div class="text-block">
+        Arquitectura Bronze – Silver – Gold
+        para garantizar trazabilidad y gobierno de datos.
+        </div>
+        <img src="/static/delta_lake.png">
+    </div>
+    """
+
     return layout(
-        "Arquitectura Medallion - Delta Lake",
-        "Modelo Bronze – Silver – Gold",
-        """
-        La arquitectura Medallion organiza los datos en capas
-        progresivas de calidad para garantizar trazabilidad,
-        control y gobierno.
-        """,
-        """
-        Bronze almacena datos crudos,
-        Silver datos limpios y estructurados,
-        Gold datos listos para analítica avanzada.
-        """,
-        image="delta_lake.png"
+        "Arquitectura Medallion",
+        "Modelo Delta Lake",
+        content
     )
 
 
 # ===============================
-# ARQUITECTURA CLOUD (AQUÍ VA EL STORAGE)
+# ARQUITECTURA CLOUD
 # ===============================
 @app.get("/arquitectura", response_class=HTMLResponse)
 def arquitectura():
+
+    content = """
+    <div class="card">
+        <div class="text-block">
+        Integración de Data Lake, Azure ML y visualización estratégica.
+        Azure Blob Storage actúa como repositorio central.
+        </div>
+        <img src="/static/azure_arch.png">
+        <a class="btn" target="_blank"
+        href="https://stmlauditoria2026.blob.core.windows.net/">
+        Explorar Azure Blob Storage
+        </a>
+    </div>
+    """
+
     return layout(
         "Arquitectura Cloud Azure",
         "Infraestructura Analítica End-to-End",
-        """
-        La solución integra Data Lake, Azure ML
-        y visualización estratégica.
-        """,
-        """
-        Azure Blob Storage actúa como repositorio central
-        de datos estructurados y no estructurados.
-        """,
-        image="azure_arch.png",
-        link="https://portal.azure.com/#@ccriveraa89gmail.onmicrosoft.com/resource/subscriptions/76ed1c4c-2873-4232-97e7-02be03d92110/resourceGroups/rg-auditoria-ml/providers/Microsoft.Storage/storageAccounts/stmlauditoria2026/containersList",
-        link_text="Explorar Azure Blob Storage"
+        content
     )
 
 
 # ===============================
-# MODELO ML (AQUÍ VA EL NOTEBOOK)
+# MODELO ML
 # ===============================
 @app.get("/modelo", response_class=HTMLResponse)
 def modelo():
+
+    content = """
+    <div class="model-grid">
+
+        <div class="model-card">
+            <h3>Isolation Forest</h3>
+            <p>Como un auditor que separa registros hasta encontrar cuáles se aíslan rápidamente.</p>
+        </div>
+
+        <div class="model-card">
+            <h3>Local Outlier Factor</h3>
+            <p>Compara cada registro con sus vecinos inmediatos para detectar diferencias locales.</p>
+        </div>
+
+        <div class="model-card">
+            <h3>One-Class SVM</h3>
+            <p>Dibuja un perímetro alrededor del comportamiento normal y marca lo que queda fuera.</p>
+        </div>
+
+        <div class="model-card">
+            <h3>Elliptic Envelope</h3>
+            <p>Mide la distancia estadística respecto al centro multivariable.</p>
+        </div>
+
+    </div>
+
+    <a class="btn" target="_blank"
+    href="https://ml.azure.com/fileexplorerAzNB?wsid=/subscriptions/76ed1c4c-2873-4232-97e7-02be03d92110/resourcegroups/rg-auditoria-ml/providers/Microsoft.MachineLearningServices/workspaces/mlw-auditoria2026">
+    Ver Notebook Azure ML
+    </a>
+    """
+
     return layout(
         "Modelo Ensemble de Detección de Anomalías",
         "Machine Learning No Supervisado",
-		"""
-		Se implementó un enfoque ensemble combinando
-		Isolation Forest, LOF, One-Class SVM y Elliptic Envelope.
-
-		• Isolation Forest:
-		Funciona como un auditor que separa registros uno a uno
-		hasta encontrar cuáles se aíslan rápidamente del resto.
-		Si un dato necesita muy pocos cortes para quedar solo,
-		probablemente es anómalo.
-
-		• Local Outlier Factor (LOF):
-		Es como comparar un comercio con sus vecinos del mismo barrio.
-		Si su comportamiento es muy diferente respecto a su entorno inmediato,
-		se considera sospechoso, aunque a nivel global no lo parezca.
-
-		• One-Class SVM:
-		Actúa como un guardia que dibuja un perímetro alrededor
-		del comportamiento normal.
-		Todo lo que queda fuera de ese límite es marcado como atípico.
-
-		• Elliptic Envelope:
-		Funciona como medir qué tan lejos está un punto del “centro estadístico”.
-		Si un registro está demasiado lejos del promedio multivariable,
-		es tratado como una desviación significativa.
-
-		La combinación de estos enfoques permite detectar
-		diferentes tipos de anomalías y reducir falsos positivos,
-		tal como lo haría un comité de auditores evaluando
-		un mismo caso desde distintas perspectivas.
-		""",
-        """
-        El modelo fue desarrollado y validado en Azure ML,
-        permitiendo entrenamiento, versionamiento y despliegue.
-        """,
-        link="https://ml.azure.com/fileexplorerAzNB?wsid=/subscriptions/76ed1c4c-2873-4232-97e7-02be03d92110/resourcegroups/rg-auditoria-ml/providers/Microsoft.MachineLearningServices/workspaces/mlw-auditoria2026&tid=4f2a92d8-1b15-462d-be76-09d1be64566c&activeFilePath=Users/ccriveraa89/Pipeline_Medallion_Auditoria_ML.ipynb",
-        link_text="Ver Notebook Azure ML"
+        content
     )
 
 
@@ -298,18 +317,22 @@ def modelo():
 # ===============================
 @app.get("/dashboard", response_class=HTMLResponse)
 def dashboard():
+
+    content = """
+    <div class="card">
+        <div class="text-block">
+        Visualización estratégica de resultados del modelo
+        mediante dashboards interactivos en Power BI.
+        </div>
+        <a class="btn" target="_blank"
+        href="https://app.powerbi.com/links/_orIgkbZcp?ctid=08b5b193-b9bb-43f2-922b-7e2948a408e9&pbi_source=linkShare">
+        Abrir Dashboard Power BI
+        </a>
+    </div>
+    """
+
     return layout(
         "Dashboard Power BI",
-        "Visualización Estratégica de Resultados",
-        """
-        Los resultados del modelo se presentan mediante
-        dashboards interactivos para análisis territorial
-        e institucional.
-        """,
-        """
-        La visualización facilita toma de decisiones
-        basadas en evidencia analítica.
-        """,
-        link="https://app.powerbi.com/links/_orIgkbZcp?ctid=08b5b193-b9bb-43f2-922b-7e2948a408e9&pbi_source=linkShare",
-        link_text="Abrir Dashboard Power BI"
+        "Visualización Estratégica",
+        content
     )
