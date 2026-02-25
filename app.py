@@ -171,16 +171,13 @@ def inicio():
     content = """
     <div class="card">
         <div class="text-block">
-        Obtener un entendimiento integral de la estructura y comportamiento de los datos
-		transaccionales.,
-        Identificar tendencias, patrones y posibles problemáticas desde la perspectiva del
-		negocio.
-        Detectar transacciones inusuales o anómalas que puedan representar situaciones de
-		riesgo para el Banco.
-		Evaluar el cumplimiento de reglas de negocio definidas para la apertura y manejo
-		de productos financieros.
-		Formular propuestas de alertamiento para fortalecer el control preventivo desde
-		auditoría.
+        Objetivos
+        
+        1. Obtener un entendimiento integral de la estructura y comportamiento de los datos transaccionales.,
+        2. Identificar tendencias, patrones y posibles problemáticas desde la perspectiva del negocio.
+        3. Detectar transacciones inusuales o anómalas que puedan representar situaciones de riesgo para el Banco.
+		4. Evaluar el cumplimiento de reglas de negocio definidas para la apertura y manejo de productos financieros.
+		5.Formular propuestas de alertamiento para fortalecer el control preventivo desde auditoría.
         </div>
     </div>
 
