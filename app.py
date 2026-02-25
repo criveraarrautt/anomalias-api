@@ -1,200 +1,198 @@
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI
 from fastapi.responses import HTMLResponse
-from pydantic import BaseModel
-import joblib
-import numpy as np
-import os
-
-# ==============================
-# Configuración básica
-# ==============================
+from fastapi.staticfiles import StaticFiles
 
 app = FastAPI(
-    title="API Detección de Anomalías",
-    version="1.0.0",
-    description="Plataforma Analítica - Modelo de Anomalías con Machine Learning"
+    title="Plataforma Arquitectura Analítica",
+    version="2.0"
 )
 
-# ==============================
-# Carga del modelo
-# ==============================
+# Servir imágenes
+app.mount("/static", StaticFiles(directory="static"), name="static")
 
-MODEL_PATH = "modelo_anomalias_v1.pkl"
 
-try:
-    modelo = joblib.load(MODEL_PATH)
-except Exception as e:
-    modelo = None
-    print(f"Error cargando modelo: {e}")
+# =============================
+# Plantilla base
+# =============================
 
-# ==============================
-# Esquema de entrada
-# ==============================
-
-class InputData(BaseModel):
-    TXTOTAL: float
-    TXEFECTIVO: float
-    RATIO_EFECTIVO: float
-    HORA_MIN: float
-    DOW: float
-    USER_TX_MES: float
-    CLI_TX_MES: float
-    SCORE_REGLAS: float
-
-# ==============================
-# Página principal (Presentación)
-# ==============================
-
-@app.get("/", response_class=HTMLResponse)
-def home():
-    return """
+def layout(title, content):
+    return f"""
     <html>
-        <head>
-            <title>Plataforma Analítica - Modelo de Anomalías</title>
-            <style>
-                body {
-                    font-family: 'Segoe UI', Arial, sans-serif;
-                    margin: 0;
-                    background-color: #F4F6F9;
-                    color: #1A1A1A;
-                }
-                header {
-                    background-color: #003865;
-                    color: white;
-                    padding: 30px;
-                    text-align: center;
-                }
-                .container {
-                    padding: 40px;
-                    max-width: 1100px;
-                    margin: auto;
-                }
-                .card {
-                    background: white;
-                    padding: 25px;
-                    border-radius: 12px;
-                    margin-bottom: 30px;
-                    box-shadow: 0px 6px 18px rgba(0,0,0,0.08);
-                    border-left: 6px solid #005EB8;
-                }
-                h2 { color: #003865; }
-                a.button {
-                    display: inline-block;
-                    padding: 12px 20px;
-                    background-color: #D71920;
-                    color: white;
-                    text-decoration: none;
-                    border-radius: 8px;
-                    font-weight: bold;
-                }
-                footer {
-                    background-color: #003865;
-                    color: white;
-                    text-align: center;
-                    padding: 15px;
-                    margin-top: 40px;
-                }
-            </style>
-        </head>
-        <body>
+    <head>
+        <title>{title}</title>
+        <style>
+            body {{
+                font-family: 'Segoe UI', Arial;
+                margin: 0;
+                background-color: #F4F6F9;
+            }}
+            nav {{
+                background-color: #003865;
+                padding: 15px;
+            }}
+            nav a {{
+                color: white;
+                margin-right: 20px;
+                text-decoration: none;
+                font-weight: bold;
+            }}
+            header {{
+                padding: 40px;
+                text-align: center;
+                background-color: #005EB8;
+                color: white;
+            }}
+            .container {{
+                padding: 40px;
+                max-width: 1100px;
+                margin: auto;
+            }}
+            h2 {{
+                color: #003865;
+            }}
+            .card {{
+                background: white;
+                padding: 30px;
+                border-radius: 12px;
+                margin-bottom: 30px;
+                box-shadow: 0px 6px 18px rgba(0,0,0,0.08);
+            }}
+            img {{
+                width: 100%;
+                border-radius: 10px;
+                margin-top: 20px;
+            }}
+        </style>
+    </head>
+    <body>
 
-            <header>
-                <h1>Plataforma de Detección de Anomalías</h1>
-                <p>Arquitectura Analítica | Machine Learning | API en la Nube</p>
-            </header>
+    <nav>
+        <a href="/">Inicio</a>
+        <a href="/metodologia">Metodología</a>
+        <a href="/arquitectura-datalake">Data Lake</a>
+        <a href="/arquitectura-cloud">Arquitectura Cloud</a>
+        <a href="/modelo-ml">Modelo ML</a>
+        <a href="/dashboard">Dashboard</a>
+        <a href="/docs">API</a>
+    </nav>
 
-            <div class="container">
+    <header>
+        <h1>{title}</h1>
+    </header>
 
-                <div class="card">
-                    <h2>🏗 Arquitectura del Sistema</h2>
-                    <ul>
-                        <li><strong>Capa de Datos:</strong> Preprocesamiento y escalamiento.</li>
-                        <li><strong>Capa de Modelado:</strong> Ensemble ML (IForest, LOF, SVM, PCA).</li>
-                        <li><strong>Capa API:</strong> Microservicio FastAPI desplegado en Render.</li>
-                        <li><strong>Capa Visualización:</strong> Dashboard estratégico en Power BI.</li>
-                    </ul>
-                </div>
+    <div class="container">
+        {content}
+    </div>
 
-                <div class="card">
-                    <h2>📊 Dashboard Power BI</h2>
-                    <p>Accede al monitoreo interactivo:</p>
-                    <a href="https://app.powerbi.com/groups/me/reports/aa89ddd4-4770-4458-824a-9ea9508fc87b"
-                       target="_blank"
-                       class="button">
-                        Ver Dashboard
-                    </a>
-                </div>
-
-                <div class="card">
-                    <h2>📘 Documentación Técnica</h2>
-                    <a href="/docs" target="_blank" class="button">
-                        Ir a Swagger
-                    </a>
-                </div>
-
-            </div>
-
-            <footer>
-                Arquitectura Analítica | Modelo de Anomalías | Deploy Cloud
-            </footer>
-
-        </body>
+    </body>
     </html>
     """
 
-# ==============================
-# Endpoint de predicción
-# ==============================
 
-@app.post("/predict")
-def predict(data: InputData):
-    if modelo is None:
-        raise HTTPException(status_code=500, detail="Modelo no cargado")
+# =============================
+# Páginas
+# =============================
 
-    try:
-        X = np.array([[ 
-            data.TXTOTAL,
-            data.TXEFECTIVO,
-            data.RATIO_EFECTIVO,
-            data.HORA_MIN,
-            data.DOW,
-            data.USER_TX_MES,
-            data.CLI_TX_MES,
-            data.SCORE_REGLAS
-        ]])
+@app.get("/", response_class=HTMLResponse)
+def inicio():
+    content = """
+    <div class="card">
+        <h2>Visión General</h2>
+        <p>
+        Plataforma integral para detección de anomalías basada en arquitectura moderna:
+        Data Lake + Machine Learning + API + BI.
+        </p>
+    </div>
+    """
+    return layout("Plataforma de Detección de Anomalías", content)
 
-        scaler = modelo["scaler"]
-        iforest = modelo["iforest"]
-        lof = modelo["lof"]
-        ocsvm = modelo["ocsvm"]
-        ee = modelo["elliptic"]
-        pca = modelo["pca"]
 
-        Xs = scaler.transform(X)
+@app.get("/metodologia", response_class=HTMLResponse)
+def metodologia():
+    content = """
+    <div class="card">
+        <h2>Metodología CRISP-DM</h2>
+        <ul>
+            <li>Identificación de necesidades del negocio</li>
+            <li>Estudio y comprensión de datos</li>
+            <li>Transformación y EDA</li>
+            <li>Modelado</li>
+            <li>Evaluación</li>
+            <li>Despliegue</li>
+        </ul>
+        <p>Aplicación práctica sobre dataset transaccional bancario.</p>
+    </div>
+    """
+    return layout("Metodología CRISP-DM", content)
 
-        s_if = -iforest.decision_function(Xs)
-        s_lof = -lof.decision_function(Xs)
-        s_svm = -ocsvm.decision_function(Xs)
-        s_ee = -ee.decision_function(Xs)
 
-        Z = pca.transform(Xs)
-        Xrec = pca.inverse_transform(Z)
-        recon = np.mean((Xs - Xrec) ** 2, axis=1)
+@app.get("/arquitectura-datalake", response_class=HTMLResponse)
+def datalake():
+    content = """
+    <div class="card">
+        <h2>Arquitectura Bronze – Silver – Gold</h2>
+        <p>
+        Se implementó modelo conceptual Delta Lake:
+        </p>
+        <ul>
+            <li>Bronze: Datos crudos</li>
+            <li>Silver: Datos transformados y limpios</li>
+            <li>Gold: Agregaciones para negocio</li>
+        </ul>
+        <img src="/static/delta_lake.png">
+    </div>
+    """
+    return layout("Arquitectura Data Lake", content)
 
-        ensemble = np.mean([s_if, s_lof, s_svm, s_ee, recon], axis=0)
 
-        return {
-            "anomaly_score": float(ensemble[0]),
-            "status": "Anómala" if ensemble[0] > 0 else "Normal"
-        }
+@app.get("/arquitectura-cloud", response_class=HTMLResponse)
+def cloud():
+    content = """
+    <div class="card">
+        <h2>Arquitectura Cloud (Azure Stack)</h2>
+        <p>
+        Arquitectura moderna:
+        Ingesta → Data Lake → Procesamiento → ML → API → BI
+        </p>
+        <img src="/static/azure_arch.png">
+    </div>
+    """
+    return layout("Arquitectura Cloud", content)
 
-    except Exception as e:
-        raise HTTPException(status_code=400, detail=str(e))
 
-# ==============================
-# Health Check
-# ==============================
+@app.get("/modelo-ml", response_class=HTMLResponse)
+def modelo():
+    content = """
+    <div class="card">
+        <h2>Modelo de Detección de Anomalías</h2>
+        <ul>
+            <li>Isolation Forest</li>
+            <li>Local Outlier Factor</li>
+            <li>One-Class SVM</li>
+            <li>Elliptic Envelope</li>
+            <li>PCA (reducción dimensional)</li>
+        </ul>
+        <p>
+        Se construyó un ensemble score para robustecer la detección.
+        </p>
+    </div>
+    """
+    return layout("Modelo Machine Learning", content)
 
-@app.get("/health")
-def health():
-    return {"status": "OK", "modelo_cargado": modelo is not None}
+
+@app.get("/dashboard", response_class=HTMLResponse)
+def dashboard():
+    content = """
+    <div class="card">
+        <h2>Dashboard Power BI</h2>
+        <p>
+        Visualización estratégica conectada a la API.
+        </p>
+        <a href="https://app.powerbi.com/groups/me/reports/aa89ddd4-4770-4458-824a-9ea9508fc87b"
+           target="_blank"
+           style="background:#D71920;color:white;padding:12px 20px;border-radius:8px;text-decoration:none;">
+           Ver Dashboard
+        </a>
+    </div>
+    """
+    return layout("Visualización BI", content)
